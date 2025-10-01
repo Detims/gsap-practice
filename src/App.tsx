@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from 'gsap/all'
 import gsap from 'gsap'
 import theresa0 from "./assets/theresa0.png"
 import theresa1 from "./assets/theresa1.png"
 import './App.css'
+
+gsap.registerPlugin(ScrollTrigger)
 
 function App() {
   useGSAP(() => {
@@ -27,13 +30,13 @@ function App() {
 
   useGSAP(() => {
     timeline.to('.theresa0', {
-      x: 250,
+      x: 100,
       rotation: 360,
       duration: 2,
       ease: 'back.inOut',
     })
     timeline.to('.theresa0', {
-      y: 250,
+      x: 250,
       duration: 2,
       ease: 'back.inOut'
     })
@@ -47,11 +50,91 @@ function App() {
     
   }), []
 
+  useGSAP(() => {
+    gsap.to('.stagger', {
+      y: 250,
+      rotation: 360,
+      repeat: -1,
+      yoyo: true,
+      stagger: {
+        amount: 0.2,
+        grid: [2, 1],
+        axis: 'y',
+        ease: 'circ.inOut',
+        from: 'center',
+      }
+    })
+  }, [])
+
+  const scrollRef = useRef()
+
+  useGSAP(() => {
+    const boxes = gsap.utils.toArray(scrollRef.current.children)
+
+    boxes.forEach((box) => {
+      gsap.to(box, {
+        x: 150 * (boxes.indexOf(box) + 2),
+        rotation: 360,
+        scale: 1.5,
+        scrollTrigger: {
+          trigger: box,
+          start: 'bottom bottom',
+          end: 'top 10%',
+          scrub: true,
+        },
+        ease: 'power1.inOut',
+      })
+    })
+  }, { scope: scrollRef })
+
+  useGSAP(() => {
+    gsap.to('.word', {
+      ease: 'power1.inOut',
+      opacity: 1,
+      y: 10,
+    })
+
+    gsap.fromTo('.para', {
+      opacity: 0,
+      y: 20,
+    }, {
+      opacity: 1,
+      y: 0,
+      delay: 0.4,
+      stagger: 0.1,
+    })
+  }, [])
+
   return (
     <>
-      <h1>GSAP to/from/fromTo</h1>
+      <h1 className='word opacity-0'>GSAP to/from/fromTo</h1>
       <img src={theresa1} className='logo theresa1' alt='theresa' />
+      <h1 className='para'>Timeline</h1>
       <img src={theresa0} className='logo theresa0' alt='theresa' />
+
+      <button onClick={() => {
+        if(timeline.paused()) {
+          timeline.play()
+        } else {
+          timeline.pause()
+        }
+      }}>
+        Pause
+      </button>
+
+      <h1 className='para'>Stagger</h1>
+      <div className='flex'>
+        <img src={theresa1} className='stagger' alt='theresa' />
+        <img src={theresa1} className='stagger' alt='theresa' />
+        <img src={theresa1} className='stagger' alt='theresa' />
+      </div>
+
+      <div className='flex para' ref={scrollRef}>
+        <img src={theresa1} className='pt-96' alt='theresa' />
+        <img src={theresa1} className='pt-96' alt='theresa' />
+      </div>
+
+      <h1 className='pt-96 para'>Scroll Trigger</h1>
     </>
   )
 }

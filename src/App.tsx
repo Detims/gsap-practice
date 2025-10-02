@@ -4,7 +4,6 @@ import { ScrollTrigger } from 'gsap/all'
 import gsap from 'gsap'
 import theresa0 from "./assets/theresa0.png"
 import theresa1 from "./assets/theresa1.png"
-import './App.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -106,36 +105,38 @@ function App() {
   }, [])
 
   return (
-    <>
-      <h1 className='word opacity-0'>GSAP to/from/fromTo</h1>
-      <img src={theresa1} className='logo theresa1' alt='theresa' />
-      <h1 className='para'>Timeline</h1>
-      <img src={theresa0} className='logo theresa0' alt='theresa' />
+    <div className='w-full flex flex-col justify-center items-center'>
+      <div className='flex flex-col justify-center items-center'>
+        <h1 className='word opacity-0'>GSAP to/from/fromTo</h1>
+        <img src={theresa1} className='logo theresa1' alt='theresa' />
+        <h1 className='para'>Timeline</h1>
+        <img src={theresa0} className='logo theresa0' alt='theresa' />
 
-      <button onClick={() => {
-        if(timeline.paused()) {
-          timeline.play()
-        } else {
-          timeline.pause()
-        }
-      }}>
-        Pause
-      </button>
+        <button onClick={() => {
+          if(timeline.paused()) {
+            timeline.play()
+          } else {
+            timeline.pause()
+          }
+        }}>
+          Pause
+        </button>
 
-      <h1 className='para'>Stagger</h1>
-      <div className='flex'>
-        <img src={theresa1} className='stagger' alt='theresa' />
-        <img src={theresa1} className='stagger' alt='theresa' />
-        <img src={theresa1} className='stagger' alt='theresa' />
+        <h1 className='para'>Stagger</h1>
+        <div className='flex'>
+          <img src={theresa1} className='stagger' alt='theresa' />
+          <img src={theresa1} className='stagger' alt='theresa' />
+          <img src={theresa1} className='stagger' alt='theresa' />
+        </div>
+
+        <div className='flex para' ref={scrollRef}>
+          <img src={theresa1} className='pt-96' alt='theresa' />
+          <img src={theresa1} className='pt-96' alt='theresa' />
+        </div>
+
+        <h1 className='pt-96 para'>Scroll Trigger</h1>
       </div>
-
-      <div className='flex para' ref={scrollRef}>
-        <img src={theresa1} className='pt-96' alt='theresa' />
-        <img src={theresa1} className='pt-96' alt='theresa' />
-      </div>
-
-      <h1 className='pt-96 para'>Scroll Trigger</h1>
-    </>
+    </div>
   )
 }
 

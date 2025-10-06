@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/all'
 import gsap from 'gsap'
 import theresa0 from "./assets/theresa0.png"
 import theresa1 from "./assets/theresa1.png"
+import ShakeImage from './ShakeImage'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -47,7 +48,7 @@ function App() {
       ease: 'back.inOut',
     })
     
-  }), []
+  }, [])
 
   useGSAP(() => {
     gsap.to('.stagger', {
@@ -65,25 +66,26 @@ function App() {
     })
   }, [])
 
-  const scrollRef = useRef()
+  const scrollRef = useRef<HTMLDivElement | null>(null)
 
   useGSAP(() => {
-    const boxes = gsap.utils.toArray(scrollRef.current.children)
-
-    boxes.forEach((box) => {
-      gsap.to(box, {
-        x: 150 * (boxes.indexOf(box) + 2),
-        rotation: 360,
-        scale: 1.5,
-        scrollTrigger: {
-          trigger: box,
-          start: 'bottom bottom',
-          end: 'top 10%',
-          scrub: true,
-        },
-        ease: 'power1.inOut',
+    if (scrollRef.current){
+      const boxes = gsap.utils.toArray(scrollRef.current.children)
+      boxes.forEach((box) => {
+        gsap.to(box, {
+          x: 150 * (boxes.indexOf(box) + 2),
+          rotation: 360,
+          scale: 1.5,
+          scrollTrigger: {
+            trigger: box,
+            start: 'bottom bottom',
+            end: 'top 10%',
+            scrub: true,
+          },
+          ease: 'power1.inOut',
+        })
       })
-    })
+    }
   }, { scope: scrollRef })
 
   useGSAP(() => {
@@ -102,6 +104,20 @@ function App() {
       delay: 0.4,
       stagger: 0.1,
     })
+
+    gsap.fromTo('.hover', {
+      y: -5,
+    }, {
+      y: 5,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: 'power1.inOut',
+      onComplete: () => {
+        // Reset y position
+        gsap.set('.hover', { y: 0 });
+      }
+    });
   }, [])
 
   return (
@@ -129,6 +145,9 @@ function App() {
           <img src={theresa1} className='stagger' alt='theresa' />
         </div>
 
+        <h1 className='para pt-128'>Hover Shake</h1>
+        <ShakeImage />
+
         <div className='flex para' ref={scrollRef}>
           <img src={theresa1} className='pt-96' alt='theresa' />
           <img src={theresa1} className='pt-96' alt='theresa' />
@@ -140,4 +159,4 @@ function App() {
   )
 }
 
-export default App  
+export default App
